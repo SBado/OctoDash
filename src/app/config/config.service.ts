@@ -159,6 +159,18 @@ export class ConfigService {
     return this.config.octodash.customActions;
   }
 
+  public getSleepCustomActions(): CustomAction[] {
+    return this.config.octodash.sleepCustomActions;
+  }
+
+  public showActionsWhileSleeping(): boolean {
+    return this.config.octodash.customActionsWhileSleeping;
+  }
+
+  public connectOnWake(): boolean {
+    return this.config.octodash.connectOnWake;
+  }
+
   public getXYSpeed(): number {
     return this.config.printer.xySpeed;
   }
@@ -338,10 +350,13 @@ interface PSUControlPlugin extends Plugin {
 
 interface OctoDash {
   customActions: CustomAction[];
+  sleepCustomActions: CustomAction[];
   fileSorting: FileSorting;
   pollingInterval: number;
   touchscreen: boolean;
   turnScreenOffWhileSleeping: boolean;
+  customActionsWhileSleeping: boolean;
+  connectOnWake: boolean;
   preferPreviewWhilePrinting: boolean;
   previewProgressCircle: boolean;
 }
@@ -570,6 +585,8 @@ const schema = {
         'pollingInterval',
         'touchscreen',
         'turnScreenOffWhileSleeping',
+        'customActionsWhileSleeping',
+        'connectOnWake',
         'preferPreviewWhilePrinting',
         'previewProgressCircle',
       ],
@@ -608,6 +625,40 @@ const schema = {
             },
           },
         },
+        sleepCustomActions: {
+          $id: '#/properties/octodash/properties/sleepCustomActions',
+          type: 'array',
+          items: {
+            $id: '#/properties/octodash/properties/sleepCustomActions/items',
+            type: 'object',
+            required: ['icon', 'command', 'color', 'confirm', 'exit'],
+            properties: {
+              icon: {
+                $id: '#/properties/octodash/properties/sleepCustomActions/items/properties/icon',
+                type: 'string',
+                pattern: '^(.*)$',
+              },
+              command: {
+                $id: '#/properties/octodash/properties/sleepCustomActions/items/properties/command',
+                type: 'string',
+                pattern: '^(.*)$',
+              },
+              color: {
+                $id: '#/properties/octodash/properties/sleepCustomActions/items/properties/color',
+                type: 'string',
+                pattern: '^(.*)$',
+              },
+              confirm: {
+                $id: '#/properties/octodash/properties/sleepCustomActions/items/properties/confirm',
+                type: 'boolean',
+              },
+              exit: {
+                $id: '#/properties/octodash/properties/sleepCustomActions/items/properties/exit',
+                type: 'boolean',
+              },
+            },
+          },
+        },
         fileSorting: {
           $id: '#/properties/octodash/properties/fileSorting',
           type: 'object',
@@ -635,6 +686,14 @@ const schema = {
         },
         turnScreenOffWhileSleeping: {
           $id: '#/properties/octodash/properties/turnScreenOffWhileSleeping',
+          type: 'boolean',
+        },
+        customActionsWhileSleeping: {
+          $id: '#/properties/octodash/properties/customActionsWhileSleeping',
+          type: 'boolean',
+        },
+        connectOnWake: {
+          $id: '#/properties/octodash/properties/connectOnWake',
           type: 'boolean',
         },
         preferPreviewWhilePrinting: {

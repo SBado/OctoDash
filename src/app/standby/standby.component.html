@@ -1,3 +1,37 @@
+<div class="control__custom-left">
+  <div
+    class="control__custom-action"
+    *ngFor="let customAction of customActions | slice : 0 : leftActionsIndex"
+    [style.border-color]="customAction.color"
+    (click)="doAction(customAction.command, customAction.exit, customAction.confirm)"
+    matRipple
+    [matRippleUnbounded]="false"
+  >
+    <fa-icon
+      [icon]="['fas', customAction.icon]"
+      class="control__custom-action-icon"
+      [styles]="{ color: customAction.color }"
+    ></fa-icon>
+  </div>
+</div>
+
+<div class="control__custom-right" *ngIf="rightActionsIndex > 0">
+  <div
+    class="control__custom-action"
+    *ngFor="let customAction of customActions | slice : 3 : rightActionsIndex"
+    [style.border-color]="customAction.color"
+    (click)="doAction(customAction.command, customAction.exit, customAction.confirm)"
+    matRipple
+    [matRippleUnbounded]="false"
+  >
+    <fa-icon
+      [icon]="['fas', customAction.icon]"
+      class="control__custom-action-icon"
+      [styles]="{ color: customAction.color }"
+    ></fa-icon>
+  </div>
+</div>
+
 <div (click)="reconnect()">
   <img src="assets/icon/icon-main.svg" class="standby__icon" />
   <span class="standby__text-big">Shhh! OctoDash is sleeping.</span>
@@ -10,3 +44,13 @@
 </div>
 
 <div class="standby__error loading-dots" *ngIf="connecting">connecting</div>
+
+<div class="confirm__wrapper" *ngIf="actionToConfirm">
+  <div class="confirm">
+    <h1>Are you sure?</h1>
+    <p class="confirm__sub-heading">Do you want to execute the following GCode?</p>
+    <p class="confirm__gcode">{{ actionToConfirm.command }}</p>
+    <img class="confirm__icon" src="assets/confirm.svg" (click)="doActionConfirm()" />
+    <img class="confirm__icon" src="assets/cancel.svg" (click)="doActionNoConfirm()" />
+  </div>
+</div>

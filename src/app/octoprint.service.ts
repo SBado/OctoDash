@@ -34,12 +34,12 @@ export class OctoprintService {
       );
   }
 
-  public sendSystemCommand(command: string): void {
+  public sendSystemCommand(command: string, type = 'core'): void {
     if (this.httpPOSTRequest) {
       this.httpPOSTRequest.unsubscribe();
     }
     this.httpPOSTRequest = this.http
-      .post(this.configService.getURL(`system/commands/core/${command}`), null, this.configService.getHTTPHeaders())
+      .post(this.configService.getURL(`system/commands/${type}/${command}`), null, this.configService.getHTTPHeaders())
       .subscribe(
         (): void => null,
         (error: HttpErrorResponse): void => {

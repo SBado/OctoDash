@@ -90,6 +90,17 @@ export class AppService {
     this.electronService.ipcRenderer.send('screenWakeup');
   }
 
+  public getDisplayState(): boolean {
+    let state = undefined;
+    this.electronService.ipcRenderer.invoke('getScreenState').then(result => {
+      if (result != undefined) {
+        state = result;
+      }
+    });
+
+    return state === 'on' ? true : state === 'off' ? false : undefined;
+  }
+
   public getUpdateError(): string[] {
     return this.updateError;
   }

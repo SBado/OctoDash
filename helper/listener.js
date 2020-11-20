@@ -19,6 +19,21 @@ function activateScreenSleepListener(ipcMain) {
     exec('xset -dpms');
     exec('xset s noblank');
   });
+
+  ipcMain.handle('getScreenState', async () => {
+    let result = undefined;
+    await exec("xset q |  (?<=Monitor is ).*'", (error, stdout, stderr) => {
+      if (error) {
+        console.error(`exec error: ${error}`);
+        return;
+      }
+      console.log(`stdout: ${stdout}`);
+      console.error(`stderr: ${stderr}`);
+      result = stdout;
+    });
+
+    return result.toLowerCase().trim();
+  });
 }
 
 function activateReloadListener(ipcMain, window, dev) {

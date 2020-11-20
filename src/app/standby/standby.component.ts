@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
+import { ActionService, ActionToConfirm } from '../action.service';
 import { AppService } from '../app.service';
 import { ConfigService } from '../config/config.service';
 import { NotificationService } from '../notification/notification.service';
@@ -18,24 +19,42 @@ export class StandbyComponent implements OnInit {
   public error = '';
   private connectionRetries = 3;
   private displaySleepTimeout: ReturnType<typeof setTimeout>;
+  private displayOn: boolean;
+  public actionToConfirm: ActionToConfirm;
+  public customActions = [];
+  public leftActionsIndex = 0;
+  public rightActionsIndex = 0;
 
   public constructor(
+    private actionService: ActionService,
     private configService: ConfigService,
     private http: HttpClient,
     private router: Router,
     private service: AppService,
     private notificationService: NotificationService,
     private psuControlService: PsuControlService,
-  ) {}
+  ) {
+    this.customActions = this.configService.getSleepCustomActions();
+    this.leftActionsIndex = this.customActions.length <= 3 ? this.customActions.length : 3;
+    this.rightActionsIndex = this.customActions.length <= 3 ? 0 : this.customActions.length;
+  }
 
   public ngOnInit(): void {
+    this.displayOn = this.service.getDisplayState();
     this.notificationService.disableNotifications();
     if (this.configService.getAutomaticScreenSleep()) {
-      this.displaySleepTimeout = setTimeout(this.service.turnDisplayOff.bind(this.service), 300000);
+      this.displaySleepTimeout = setTimeout(() => {
+        this.service.turnDisplayOff.bind(this.service);
+        this.displayOn = this.service.getDisplayState();
+      }, 300000);
     }
   }
 
   public reconnect(): void {
+    if (!this.configService.connectOnWake() && this.displayOn === false) {
+      this.displayOn = this.service.getDisplayState();
+      return;
+    }
     this.connecting = true;
     if (this.configService.turnOnPSUWhenExitingSleep()) {
       this.psuControlService.changePSUState(true);
@@ -43,6 +62,26 @@ export class StandbyComponent implements OnInit {
     } else {
       this.checkConnection();
     }
+  }
+
+  public doAction(command: string, exit: boolean, confirm: boolean): void {
+    if (confirm) {
+      this.actionToConfirm = {
+        command,
+        exit,
+      };
+    } else {
+      this.actionService.doAction(command, exit);
+    }
+  }
+
+  public doActionConfirm(): void {
+    this.actionService.doAction(this.actionToConfirm.command, this.actionToConfirm.exit);
+    this.actionToConfirm = null;
+  }
+
+  public doActionNoConfirm(): void {
+    this.actionToConfirm = null;
   }
 
   private connectToPrinter(): void {

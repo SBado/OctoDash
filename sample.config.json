@@ -90,13 +90,58 @@
                     "exit": false
                 }
             ],
+            "sleepCustomActions": [{
+                    "icon": "home",
+                    "command": "G28",
+                    "color": "#dcdde1",
+                    "confirm": false,
+                    "exit": false
+                },
+                {
+                    "icon": "ruler-vertical",
+                    "command": "G29",
+                    "color": "#44bd32",
+                    "confirm": false,
+                    "exit": false
+                },
+                {
+                    "icon": "fire-alt",
+                    "command": "M140 S50; M104 S185",
+                    "color": "#e1b12c",
+                    "confirm": false,
+                    "exit": true
+                },
+                {
+                    "icon": "snowflake",
+                    "command": "M140 S0; M104 S0",
+                    "color": "#0097e6",
+                    "confirm": false,
+                    "exit": true
+                },
+                {
+                    "icon": "redo-alt",
+                    "command": "[!RELOAD]",
+                    "color": "#7f8fa6",
+                    "confirm": true,
+                    "exit": false
+                },
+                {
+                    "icon": "skull",
+                    "command": "[!KILL]",
+                    "color": "#e84118",
+                    "confirm": true,
+                    "exit": false
+                }
+            ],
             "fileSorting": {
                 "attribute": "name",
                 "order": "asc"
             },
             "pollingInterval": 2000,
             "touchscreen": true,
-            "turnScreenOffWhileSleeping": false
+            "turnScreenOffWhileSleeping": false,
+            "customActionsWhileSleeping": true,
+            "connectOnWake": true
         }
     }
 }
