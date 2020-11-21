@@ -60,7 +60,7 @@
     "electron:dev": "electron . --serve --big",
     "electron:serve": "wait-on http-get://localhost:4200/ && electron . --serve",
     "electron:serve:big": "wait-on http-get://localhost:4200/ && electron . --serve --big",
-    "pack": "npm run ng:build && electron-builder build -l",
+    "pack": "npm run ng:build && electron-builder build --dir --armv7l --linux deb",
     "pack:mac": "npm run ng:build && electron-builder build -m",
     "ng:serve": "ng serve",
     "ng:build": "ng build --prod"
